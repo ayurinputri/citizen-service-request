@@ -1,5 +1,6 @@
-﻿/** @license
- | Version 10.2
+﻿/*global */
+/*jslint browser:true,sloppy:true,nomen:true,unparam:true,plusplus:true */
+/*
  | Copyright 2012 Esri
  |
  | Licensed under the Apache License, Version 2.0 (the "License");
@@ -253,7 +254,7 @@ function ServiceRequestDetails(attributes) {
                     // Extract the desired date field from the list of attributes. If the date is not available, the date field is an empty string
                     var dateField = dojo.string.substitute(infoWindowData[index].AttributeValue, attributes);
                     var dateString = showNullValueAs;
-                    if (dateField.length > 0) 
+                    if (dateField.length > 0)
                     {
                         var utcMilliseconds = Number(dateField);
                         dateString = dojo.date.locale.format(date.utcToLocal(date.utcTimestampFromMs(utcMilliseconds)), {
