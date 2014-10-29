@@ -1,4 +1,4 @@
-﻿/*global */
+﻿/*global dojo,esri,esriConfig,js,orientationChange:true,Modernizr,locateAddress,showBaseMaps,removeScrollBar,clearDefaultText,replaceDefaultText,showProgressIndicator,addServiceRequest,hideProgressIndicator,getQuerystring,createBaseMapComponent,addReferenceOverlays,setMapTipPosition,shareLink,setSplashScreenHeight,setAddressResultsHeight,setCommentHeight,setViewDetailsHeight,setCmtControlsHeight,createRatingWidget,createRequestTypesList,showServiceRequestDetails,executeQueryTask,resizeHandler,getMobileMapExtent */
 /*jslint browser:true,sloppy:true,nomen:true,unparam:true,plusplus:true */
 /*
  | Copyright 2012 Esri
@@ -56,7 +56,7 @@ var selectedMapPoint; // variable to store selected map point
 var serviceRequestCommentsLayerId = "serviceRequestCommentsLayerID"; //variable for comment layer
 var infoWindowData; //Variable used for Info window collection
 var infoWindowDataTitle; //Variable used to store the header text of the pop up
-
+var messages;  // List of error messages
 
 var locatorMarkupSymbol;
 var windowURL = window.location.toString();
@@ -79,13 +79,135 @@ var requestLayerName;
 var serviceRequestFields;
 var databaseFields;
 
+//Create graphics and feature layer
+function initializeMap() {
+    var gLayer, serviceRequestLayer, handle, serviceRequestCommentsLayer;
+
+    if (dojo.query('.logo-med', dojo.byId('map')).length > 0) {
+        dojo.query('.logo-med', dojo.byId('map'))[0].id = "esriLogo";
+    } else if (dojo.query('.logo-sm', dojo.byId('map')).length > 0) {
+        dojo.query('.logo-sm', dojo.byId('map'))[0].id = "esriLogo";
+    }
+
+    dojo.addClass("esriLogo", "esriLogo");
+    dojo.byId('divSplashScreenContainer').style.display = "block";
+    dojo.addClass(dojo.byId('divSplashScreenContent'), "divSplashScreenDialogContent");
+    setSplashScreenHeight();
+    if (isMobileDevice) {
+        setAddressResultsHeight();
+        setCommentHeight();
+        setViewDetailsHeight();
+        setCmtControlsHeight();
+    }
+
+    dojo.byId("esriLogo").style.bottom = "10px";
+    createRatingWidget(dojo.byId('commentRating'));
+    gLayer = new esri.layers.GraphicsLayer();
+    gLayer.id = tempGraphicsLayerId;
+    map.addLayer(gLayer);
+
+
+    gLayer = new esri.layers.GraphicsLayer();
+    gLayer.id = highlightPollLayerId;
+    map.addLayer(gLayer);
+    serviceRequestLayer = new esri.layers.FeatureLayer(isBrowser ? operationalLayers.ServiceRequestLayerURL : operationalLayers.ServiceRequestMobileLayerURL, {
+        mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
+        outFields: ["*"],
+        id: serviceRequestLayerId,
+        displayOnPan: false
+    });
+    map.addLayer(serviceRequestLayer);
+    handle = dojo.connect(serviceRequestLayer, "onUpdateEnd", function (features) {
+        var symbolSize, url;
+
+        serviceRequestSymbol = serviceRequestLayer.renderer.infos[0].symbol;
+        symbolSize = isBrowser ? 25 : 44;
+        locatorMarkupSymbol = (locatorSettings.DefaultLocatorSymbol === "") ? serviceRequestLayer.renderer.infos[0].symbol : new esri.symbol.PictureMarkerSymbol(locatorSettings.DefaultLocatorSymbol, Number(symbolSize), Number(symbolSize));
+        createRequestTypesList(serviceRequestLayer.fields);
+        hideProgressIndicator();
+        url = esri.urlToObject(window.location.toString());
+        if (url.query && url.query !== null) {
+            if (url.query.extent.split("$featureID=").length > 0) {
+                featureID = url.query.extent.split("$featureID=")[1];
+            }
+        }
+        if (featureID !== "" && featureID !== null && featureID !== undefined) {
+            executeQueryTask();
+        }
+        dojo.disconnect(handle);
+    });
+
+
+    dojo.connect(serviceRequestLayer, "onClick", function (evt) {
+        map.infoWindow.hide();
+        map.getLayer(tempGraphicsLayerId).clear();
+        map.getLayer(highlightPollLayerId).clear();
+        // cancel event propagation
+        evt = evt || event;
+        evt.cancelBubble = true;
+        if (evt.stopPropagation) {
+            evt.stopPropagation();
+        }
+        showProgressIndicator();
+        setTimeout(function () {
+            showServiceRequestDetails(evt.graphic.geometry, evt.graphic.attributes);
+            hideProgressIndicator();
+        }, 700);
+
+    });
+
+    // Add comment layer
+    serviceRequestCommentsLayer = new esri.layers.FeatureLayer(operationalLayers.ServiceRequestCommentsLayerURL, {
+        mode: esri.layers.FeatureLayer.MODE_SELECTION,
+        outFields: ["*"],
+        id: serviceRequestCommentsLayerId,
+        displayOnPan: false
+    });
+    map.addLayer(serviceRequestCommentsLayer);
+
+    window.onresize = function () {
+        if (!isMobileDevice) {
+            resizeHandler();
+        } else {
+            orientationChange = true;
+            if (map) {
+                var timeout = (isMobileDevice && isiOS) ? 100 : 700;
+                map.infoWindow.hide();
+                setTimeout(function () {
+                    if (isMobileDevice) {
+                        map.reposition();
+                        map.resize();
+                        setAddressResultsHeight();
+                        setCommentHeight();
+                        setSplashScreenHeight();
+                        dojo.byId("divRequestTypes").style.width = (dojo.coords("divDropdown").w - 2) + "px";
+                        setViewDetailsHeight();
+                        setCmtControlsHeight();
+                        setTimeout(function () {
+                            if (selectedMapPoint) {
+                                map.setExtent(getMobileMapExtent(selectedMapPoint));
+                            }
+                            orientationChange = false;
+                            return;
+                        }, 1000);
+
+                    }
+                }, timeout);
+            }
+        }
+    };
+
+}
+
 //This initialization function is called when the DOM elements are ready
 function dojoInit() {
+    var userAgent, pickupref, responseObject, infoWindow, imgBasemap;
+
     esri.config.defaults.io.proxyUrl = "proxy.ashx"; //relative path
     esriConfig.defaults.io.alwaysUseProxy = false;
     esriConfig.defaults.io.timeout = 180000; // milliseconds
 
-    var userAgent = window.navigator.userAgent;
+    userAgent = window.navigator.userAgent;
     if (userAgent.indexOf("iPhone") >= 0 || userAgent.indexOf("iPad") >= 0) {
         isiOS = true;
         userAgent.replace(/OS ((\d+_?){2,3})\s/, function (match, key) {
@@ -116,8 +238,8 @@ function dojoInit() {
 
     }
     if (lessthanios6) {
-        if (userAgent.indexOf("iPhone") || userAgent.indexOf("iPad")) {
-            var pickupref = document.createElement('script');
+        if ((userAgent.indexOf("iPhone") >= 0) || (userAgent.indexOf("iPad") >= 0)) {
+            pickupref = document.createElement('script');
             pickupref.setAttribute("type", "text/javascript");
             pickupref.setAttribute("src", "js/picup.js");
             document.getElementsByTagName("head")[0].appendChild(pickupref);
@@ -129,26 +251,27 @@ function dojoInit() {
     }
 
 
-
     dojo.connect(dojo.byId("txtAddress"), 'onkeyup', function (evt) {
         if (evt) {
-            if (evt.keyCode == dojo.keys.ENTER) {
-                if (dojo.byId("txtAddress").value != '') {
+            if (evt.keyCode === dojo.keys.ENTER) {
+                if (dojo.byId("txtAddress").value !== '') {
                     dojo.byId("imgSearchLoader").style.display = "block";
-                    LocateAddress();
+                    locateAddress();
                     return;
                 }
             }
             //validations for auto complete search
-            if (!((evt.keyCode > 46 && evt.keyCode < 58) || (evt.keyCode > 64 && evt.keyCode < 91) || (evt.keyCode > 95 && evt.keyCode < 106) || evt.keyCode == 8 || evt.keyCode == 110 || evt.keyCode == 188)) {
-                evt = (evt) ? evt : event;
+            if (!((evt.keyCode > 46 && evt.keyCode < 58) || (evt.keyCode > 64 && evt.keyCode < 91) || (evt.keyCode > 95 && evt.keyCode < 106) || evt.keyCode === 8 || evt.keyCode === 110 || evt.keyCode === 188)) {
+                evt = evt || event;
                 evt.cancelBubble = true;
-                if (evt.stopPropagation) evt.stopPropagation();
+                if (evt.stopPropagation) {
+                    evt.stopPropagation();
+                }
                 return;
             }
             if (dojo.coords("divAddressContent").h > 0) {
-                if (dojo.byId("txtAddress").value.trim() != '') {
-                    if (lastSearchString != dojo.byId("txtAddress").value.trim()) {
+                if (dojo.byId("txtAddress").value.trim() !== '') {
+                    if (lastSearchString !== dojo.byId("txtAddress").value.trim()) {
                         lastSearchString = dojo.byId("txtAddress").value.trim();
                         dojo.empty(dojo.byId('tblAddressResults'));
 
@@ -159,7 +282,7 @@ function dojoInit() {
                             // before the timeout
                             stagedSearch = setTimeout(function () {
                                 dojo.byId("imgSearchLoader").style.display = "block";
-                                LocateAddress();
+                                locateAddress();
                                 lastSearchString = dojo.byId("txtAddress").value.trim();
                             }, 500);
                         }
@@ -168,7 +291,7 @@ function dojoInit() {
                     lastSearchString = dojo.byId("txtAddress").value.trim();
                     dojo.byId("imgSearchLoader").style.display = "none";
                     dojo.empty(dojo.byId('tblAddressResults'));
-                    RemoveScrollBar(dojo.byId('divAddressScrollContainer'));
+                    removeScrollBar(dojo.byId('divAddressScrollContainer'));
                 }
             }
         }
@@ -176,19 +299,19 @@ function dojoInit() {
 
     dojo.connect(dojo.byId("txtAddress"), 'onpaste', function (evt) {
         setTimeout(function () {
-            LocateAddress();
+            locateAddress();
         }, 100);
     });
 
     dojo.connect(dojo.byId("txtAddress"), 'oncut', function (evt) {
         setTimeout(function () {
-            LocateAddress();
+            locateAddress();
         }, 100);
     });
     if (!Modernizr.geolocation) {
         dojo.byId("tdGeolocation").style.display = "none";
     }
-    var responseObject = new js.config();
+    responseObject = new js.config();
     dojo.byId("tdSearchAddress").innerHTML = responseObject.LocatorSettings.Locators[0].DisplayText;
     dojo.byId("tdSearchRequest").innerHTML = responseObject.LocatorSettings.Locators[1].DisplayText;
 
@@ -202,14 +325,14 @@ function dojoInit() {
     dojo.byId("txtAddress").setAttribute("defaultRequestName", responseObject.LocatorSettings.Locators[0].LocatorDefaultRequest);
     dojo.byId("txtAddress").setAttribute("defaultRequestTitle", responseObject.LocatorSettings.Locators[0].LocatorDefaultRequest);
 
-    dojo.connect(dojo.byId('txtAddress'), "ondblclick", ClearDefaultText);
-    dojo.connect(dojo.byId('txtAddress'), "onblur", ReplaceDefaultText);
+    dojo.connect(dojo.byId('txtAddress'), "ondblclick", clearDefaultText);
+    dojo.connect(dojo.byId('txtAddress'), "onblur", replaceDefaultText);
     dojo.connect(dojo.byId('txtAddress'), "onfocus", function () {
         this.style.color = "#FFF";
     });
     dojo.connect(dojo.byId('txtDescription'), "onfocus", function () {
         dojo.byId("divRequestTypes").style.display = "none";
-        dojo.byId("divCreateRequestContentscrollbar_handle").style.position = (dojo.byId("divRequestTypes").style.display == "block") ? "static" : "relative";
+        dojo.byId("divCreateRequestContentscrollbar_handle").style.position = (dojo.byId("divRequestTypes").style.display === "block") ? "static" : "relative";
     });
 
     dojo.connect(dojo.byId('txtMail'), "onfocus", function () {
@@ -220,11 +343,10 @@ function dojoInit() {
         dojo.byId("divRequestTypes").style.display = "none";
     });
 
-
     mapSharingOptions = responseObject.MapSharingOptions;
     baseMapLayers = responseObject.BaseMapLayers;
-    referenceOverlays = responseObject.ReferenceOverlays
-    var infoWindow = new js.InfoWindow({
+    referenceOverlays = responseObject.ReferenceOverlays;
+    infoWindow = new js.InfoWindow({
         domNode: dojo.create("div", null, dojo.byId("map"))
     });
     if (isMobileDevice) {
@@ -243,15 +365,15 @@ function dojoInit() {
         dojo.byId("lblAppName").style.width = "80%";
         dojo.byId("tdSearchAddress").className = "tdSearchByAddress";
     } else {
-        var imgBasemap = document.createElement('img');
+        imgBasemap = document.createElement('img');
         imgBasemap.src = "images/imgbasemap.png";
         imgBasemap.className = "imgOptions";
         imgBasemap.title = "Switch Basemap";
         imgBasemap.id = "imgBaseMap";
         imgBasemap.style.cursor = "pointer";
         imgBasemap.onclick = function () {
-            ShowBaseMaps();
-        }
+            showBaseMaps();
+        };
 
         dojo.byId("tdBaseMap").appendChild(imgBasemap);
         dojo.byId("tdBaseMap").className = "tdHeader";
@@ -277,13 +399,11 @@ function dojoInit() {
         }
     });
 
-    ShowProgressIndicator();
+    showProgressIndicator();
 
 
     operationalLayers = responseObject.OperationalLayers;
-    serviceRequestCommentsLayerUrl = responseObject.ServiceRequestCommentsLayerURL;
     formatDateAs = responseObject.FormatDateAs;
-    serviceRequestmobileLayer = responseObject.ServiceRequestmobileLayerURL;
     showNullValueAs = responseObject.ShowNullValueAs;
     photoUploadText = responseObject.PhotoUploadText;
     enablePhotoUploadiOS = responseObject.EnablePhotoUploadiOS;
@@ -291,44 +411,44 @@ function dojoInit() {
     infoPopupWidth = responseObject.InfoPopupWidth;
     infoWindowData = responseObject.InfoWindowData;
 
-    if (responseObject.InfoWindowCreateTitle != null) {
-        if (responseObject.InfoWindowCreateTitle != "") {
+    if (responseObject.InfoWindowCreateTitle !== null) {
+        if (responseObject.InfoWindowCreateTitle !== "") {
             dojo.byId("createPopUpTitle").innerText = responseObject.InfoWindowCreateTitle;
         }
     }
 
-    if (responseObject.InfoWindowCreateType != null) {
-        if (responseObject.InfoWindowCreateType != "") {
+    if (responseObject.InfoWindowCreateType !== null) {
+        if (responseObject.InfoWindowCreateType !== "") {
             dojo.byId("createPopUpType").innerText = responseObject.InfoWindowCreateType;
         }
     }
 
-    if (responseObject.InfoWindowCreateName != null) {
-        if (responseObject.InfoWindowCreateName != "") {
+    if (responseObject.InfoWindowCreateName !== null) {
+        if (responseObject.InfoWindowCreateName !== "") {
             dojo.byId("createPopUpName").innerText = responseObject.InfoWindowCreateName;
         }
     }
 
-    if (responseObject.InfoWindowCreateComments != null) {
-        if (responseObject.InfoWindowCreateComments != "") {
+    if (responseObject.InfoWindowCreateComments !== null) {
+        if (responseObject.InfoWindowCreateComments !== "") {
             dojo.byId("createPopUpComments").innerText = responseObject.InfoWindowCreateComments;
         }
     }
 
-    if (responseObject.InfoWindowCreatePhone != null) {
-        if (responseObject.InfoWindowCreatePhone != "") {
+    if (responseObject.InfoWindowCreatePhone !== null) {
+        if (responseObject.InfoWindowCreatePhone !== "") {
             dojo.byId("createPopUpPhone").innerText = responseObject.InfoWindowCreatePhone;
         }
     }
 
-    if (responseObject.InfoWindowCreateEmail != null) {
-        if (responseObject.InfoWindowCreateEmail != "") {
+    if (responseObject.InfoWindowCreateEmail !== null) {
+        if (responseObject.InfoWindowCreateEmail !== "") {
             dojo.byId("createPopUpEmail").innerText = responseObject.InfoWindowCreateEmail;
         }
     }
 
-    if (responseObject.InfoWindowCreateAttach != null) {
-        if (responseObject.InfoWindowCreateAttach != "") {
+    if (responseObject.InfoWindowCreateAttach !== null) {
+        if (responseObject.InfoWindowCreateAttach !== "") {
             dojo.byId("createPopUpAttach").innerText = responseObject.InfoWindowCreateAttach;
         }
     }
@@ -357,18 +477,19 @@ function dojoInit() {
     dojo.connect(map, "onClick", function (evt) {
         map.infoWindow.hide();
         selectedMapPoint = null;
-        ShowProgressIndicator();
+        showProgressIndicator();
         setTimeout(function () {
             dojo.byId("divRequestTypes").style.display = "none";
             dojo.byId("divInfoDetails").style.display = "none";
-            AddServiceRequest(evt.mapPoint);
-            HideProgressIndicator();
+            addServiceRequest(evt.mapPoint);
+            hideProgressIndicator();
         }, 500);
     });
     dojo.connect(map, "onLoad", function () {
-        var zoomExtent;
-        var extent = GetQuerystring('extent');
-        if (extent != "") {
+        var zoomExtent, extent;
+
+        extent = getQuerystring('extent');
+        if (extent !== "") {
             zoomExtent = extent.split(',');
         } else {
             zoomExtent = responseObject.DefaultExtent.split(",");
@@ -379,8 +500,8 @@ function dojoInit() {
 
     });
 
-    CreateBaseMapComponent();
-    AddReferenceOverlays();
+    createBaseMapComponent();
+    addReferenceOverlays();
     if (!allowAttachments) {
         dojo.byId('trFileUpload').style.display = "none";
     }
@@ -392,131 +513,14 @@ function dojoInit() {
     });
 
     dojo.connect(map, "onExtentChange", function () {
-        SetMapTipPosition();
+        setMapTipPosition();
         if (dojo.coords("divAppContainer").h > 0) {
-            ShareLink();
+            shareLink();
         }
     });
     if (dojo.isIE < 9) {
-    } dojo.byId('txtSelectedRequest').style.lineHeight = "23px";
-}
-
-
-//Create graphics and feature layer
-function initializeMap() {
-    if (dojo.query('.logo-med', dojo.byId('map')).length > 0) {
-        dojo.query('.logo-med', dojo.byId('map'))[0].id = "esriLogo";
-    } else if (dojo.query('.logo-sm', dojo.byId('map')).length > 0) {
-        dojo.query('.logo-sm', dojo.byId('map'))[0].id = "esriLogo";
+        dojo.byId('txtSelectedRequest').style.lineHeight = "23px";
     }
-
-    dojo.addClass("esriLogo", "esriLogo");
-    dojo.byId('divSplashScreenContainer').style.display = "block";
-    dojo.addClass(dojo.byId('divSplashScreenContent'), "divSplashScreenDialogContent");
-    SetSplashScreenHeight();
-    if (isMobileDevice) {
-        SetAddressResultsHeight();
-        SetCommentHeight();
-        SetViewDetailsHeight();
-        SetCmtControlsHeight();
-    }
-
-    dojo.byId("esriLogo").style.bottom = "10px";
-    CreateRatingWidget(dojo.byId('commentRating'));
-    var glayer = new esri.layers.GraphicsLayer();
-    glayer.id = tempGraphicsLayerId;
-    map.addLayer(glayer);
-
-
-    var gLayer = new esri.layers.GraphicsLayer();
-    gLayer.id = highlightPollLayerId;
-    map.addLayer(gLayer);
-    var serviceRequestLayer = new esri.layers.FeatureLayer(isBrowser ? operationalLayers.ServiceRequestLayerURL : operationalLayers.ServiceRequestMobileLayerURL, {
-        mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
-        outFields: ["*"],
-        id: serviceRequestLayerId,
-        displayOnPan: false
-    });
-    map.addLayer(serviceRequestLayer);
-    var handle = dojo.connect(serviceRequestLayer, "onUpdateEnd", function (features) {
-        serviceRequestSymbol = serviceRequestLayer.renderer.infos[0].symbol;
-        var symbolSize = isBrowser ? 25 : 44;
-        locatorMarkupSymbol = (locatorSettings.DefaultLocatorSymbol == "") ? serviceRequestLayer.renderer.infos[0].symbol : new esri.symbol.PictureMarkerSymbol(locatorSettings.DefaultLocatorSymbol, Number(symbolSize), Number(symbolSize));
-        CreateRequestTypesList(serviceRequestLayer.fields);
-        HideProgressIndicator();
-        var url = esri.urlToObject(window.location.toString());
-        if (url.query && url.query != null) {
-            if (url.query.extent.split("$featureID=").length > 0) {
-                featureID = url.query.extent.split("$featureID=")[1];
-            }
-        }
-        if (featureID != "" && featureID != null && featureID != undefined) {
-            ExecuteQueryTask();
-        }
-        dojo.disconnect(handle);
-    });
-
-
-    dojo.connect(serviceRequestLayer, "onClick", function (evt) {
-        map.infoWindow.hide();
-        map.getLayer(tempGraphicsLayerId).clear();
-        map.getLayer(highlightPollLayerId).clear();
-        // cancel event propagation
-        evt = (evt) ? evt : event;
-        evt.cancelBubble = true;
-        if (evt.stopPropagation) {
-            evt.stopPropagation();
-        }
-        ShowProgressIndicator();
-        setTimeout(function () {
-            ShowServiceRequestDetails(evt.graphic.geometry, evt.graphic.attributes);
-            HideProgressIndicator();
-        }, 700);
-
-    });
-
-    // Add comment layer
-    var serviceRequestCommentsLayer = new esri.layers.FeatureLayer(operationalLayers.ServiceRequestCommentsLayerURL, {
-        mode: esri.layers.FeatureLayer.MODE_SELECTION,
-        outFields: ["*"],
-        id: serviceRequestCommentsLayerId,
-        displayOnPan: false
-    });
-    map.addLayer(serviceRequestCommentsLayer);
-
-    window.onresize = function () {
-        if (!isMobileDevice) {
-            ResizeHandler();
-        }
-        else {
-            orientationChange = true;
-            if (map) {
-                var timeout = (isMobileDevice && isiOS) ? 100 : 700;
-                map.infoWindow.hide();
-                setTimeout(function () {
-                    if (isMobileDevice) {
-                        map.reposition();
-                        map.resize();
-                        SetAddressResultsHeight();
-                        SetCommentHeight();
-                        SetSplashScreenHeight();
-                        dojo.byId("divRequestTypes").style.width = (dojo.coords("divDropdown").w - 2) + "px";
-                        SetViewDetailsHeight();
-                        SetCmtControlsHeight();
-                        setTimeout(function () {
-                            if (selectedMapPoint) {
-                                map.setExtent(GetMobileMapExtent(selectedMapPoint));
-                            }
-                            orientationChange = false;
-                            return;
-                        }, 1000);
-
-                    }
-                }, timeout);
-            }
-        }
-    }
-
 }
 
 

@@ -78,9 +78,9 @@ dojo.declare("js.config", null, {
         MapURL: "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
     }],
 
-    ReferenceOverlays: [
-    { URL: "http://services.arcgis.com/8xyWD7BXPXLSUGKQ/arcgis/rest/services/ReportStreetlightProblem/FeatureServer/1" }
-    ],
+    ReferenceOverlays: [{
+        URL: "http://services.arcgis.com/8xyWD7BXPXLSUGKQ/arcgis/rest/services/ReportStreetlightProblem/FeatureServer/1"
+    }],
 
     // Initial map extent. Use comma (,) to separate values and don t delete the last comma
     DefaultExtent: "-8946100,3177490,-8934600,3181000",
