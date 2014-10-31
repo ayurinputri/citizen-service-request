@@ -18,6 +18,7 @@
 dojo.require("dojo.window");
 dojo.require("dojo.date.locale");
 dojo.require("esri.map");
+dojo.require("esri.lang");
 dojo.require("esri.tasks.geometry");
 dojo.require("esri.tasks.locator");
 dojo.require("esri.tasks.query");
