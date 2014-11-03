@@ -1,4 +1,4 @@
-﻿/*global esri, dojo, map, referenceOverlays, highlightPollLayerId, selectedMapPoint:true,tempGraphicsLayerId, isMobileDevice,infoPopupWidth,infoPopupHeight,serviceRequestSymbol,getBrowserMapExtent,getMobileMapExtent,showCreateRequestContainer,setCreateRequestHeight,createScrollbar,showCommentsTab,resetCommentValues,setCommentHeight,featureID:true,status,infoWindowHeader,showServiceRequestContainer,showSpanErrorMessage,serviceRequestDetails,infoWindowContent,selectedRequestStatus:true,showInfoDirectionsView,isBrowser,value:true,js,infoWindowData,createTableRow,showNullValueAs,formatDateAs,fetchRequestComments,requestId,fetchAttachmentDetails,serviceRequestLayerId,setViewDetailsHeight,messages,checkMailFormat,commentId,serviceRequestCommentsLayerId,sortResultFeatures,createCommentRecord,createRatingWidget,setRating,commentsInfoPopupFieldsCollection, console,createScrollbar,showProgressIndicator,databaseFields,selectedRequestID,hideProgressIndicator,createRatingControl,showSpanErrorMessage,scrollDiv,touchStartHandler,submitIssueDetails,resetRequestFields,hideCreateRequestContainer,lessthanios6,enablePhotoUploadiOS,operationalLayers,escape,validateRequestData,serviceRequestFields,alert,Picup,showSpanErrorMessage,isPhoneNumber,isName,isiOS,setAddressResultsHeight,setSplashScreenHeight,setCmtControlsHeight,blurTextIsos,isAndroidDevice,hideBaseMapLayerContainer,hideShareAppContainer,resetSearchContainer,hideAddressContainer,lastSearchString:true,isTablet,requestLayerName,getMapExtent,windowURL,mapSharingOptions,mapExtent,resetTargetValue,removeScrollBar,touchMoveHandler,mapPoint */
+﻿/*global esri, dojo, map, referenceOverlays, highlightPollLayerId, selectedMapPoint:true,tempGraphicsLayerId, isMobileDevice,infoPopupWidth,infoPopupHeight,serviceRequestSymbol,getBrowserMapExtent,getMobileMapExtent,showCreateRequestContainer,setCreateRequestHeight,createScrollbar,showCommentsTab,resetCommentValues,setCommentHeight,featureID:true,status,infoWindowHeader,showServiceRequestContainer,showSpanErrorMessage,serviceRequestDetails,infoWindowContent,selectedRequestStatus:true,showInfoDirectionsView,isBrowser,value:true,js,infoWindowData,createTableRow,showNullValueAs,formatDateAs,fetchRequestComments,requestId,fetchAttachmentDetails,serviceRequestLayerId,setViewDetailsHeight,messages,checkMailFormat,commentId,serviceRequestCommentsLayerId,sortResultFeatures,createCommentRecord,createRatingWidget,setRating,commentsInfoPopupFieldsCollection, console,createScrollbar,showProgressIndicator,databaseFields,selectedRequestID,hideProgressIndicator,createRatingControl,showSpanErrorMessage,scrollDiv,touchStartHandler,submitIssueDetails,resetRequestFields,hideCreateRequestContainer,lessthanios6,enablePhotoUploadiOS,operationalLayers,escape,validateRequestData,serviceRequestFields,alert,Picup,showSpanErrorMessage,isPhoneNumber,isName,isiOS,setAddressResultsHeight,setSplashScreenHeight,setCmtControlsHeight,blurTextIsos,isAndroidDevice,hideBaseMapLayerContainer,hideShareAppContainer,resetSearchContainer,hideAddressContainer,lastSearchString:true,isTablet,requestLayerName,getMapExtent,windowURL,mapSharingOptions,mapExtent,resetTargetValue,removeScrollBar,touchMoveHandler,mapPoint,showRequestSearchView,showAddressSearchView */
 /*jslint browser:true,sloppy:true,nomen:true,unparam:true,plusplus:true  */
 /*
  | Copyright 2012 Esri
@@ -1596,7 +1596,7 @@ function resetTargetValue(target, title, color) {
 }
 
 //Display the view to search by address
-function ShowAddressSearchView() {
+function showAddressSearchView() {
     if (dojo.byId("imgSearchLoader").style.display === "block") {
         return;
     }
@@ -1614,7 +1614,7 @@ function ShowAddressSearchView() {
 }
 
 //Display the view to search by requestid
-function ShowRequestSearchView() {
+function showRequestSearchView() {
     if (dojo.byId("imgSearchLoader").style.display === "block") {
         return;
     }
