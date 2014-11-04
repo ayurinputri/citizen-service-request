@@ -17,7 +17,6 @@
  */
 dojo.require("dojo.window");
 dojo.require("dojo.date.locale");
-dojo.require("dojox.mobile.View");
 dojo.require("esri.map");
 dojo.require("esri.tasks.geometry");
 dojo.require("esri.tasks.locator");
