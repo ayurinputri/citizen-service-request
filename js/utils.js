@@ -1308,7 +1308,7 @@ function setCommentHeight() {
 }
 
 //Show Info request directions view
-function ShowInfoDirectionsView() {
+function showInfoDirectionsView() {
     if (dojo.byId('imgDirections').getAttribute("disp") === "Details") {
         dojo.byId('imgComments').src = "images/comments.png";
         dojo.byId('imgComments').title = "Comments";
