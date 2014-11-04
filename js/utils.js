@@ -149,7 +149,7 @@ function ShowCommentsView() {
 }
 
 //Show service request details info window
-function showSpanErrorMessage(mapPoint, attributes) {
+function showServiceRequestDetails(mapPoint, attributes) {
     //var i, selectedRequestStatus, cont;
     var i, cont;
     map.infoWindow.hide();
@@ -956,7 +956,7 @@ function submitIssueDetails() {
                 serviceRequestAttributes[serviceRequestFields.RequestIdFieldName] = String(addResults[0].objectId);
                 if (dojo.byId('txtFileName').value !== "") {
                     map.getLayer(serviceRequestLayerId).addAttachment(addResults[0].objectId, dojo.byId('formFileUplaod'), function(sucess) {
-                        showSpanErrorMessage(mapPoint, serviceRequestGraphic.attributes);
+                        showServiceRequestDetails(mapPoint, serviceRequestGraphic.attributes);
                         hideProgressIndicator();
                         resetRequestFields();
                         hideCreateRequestContainer();
@@ -967,7 +967,7 @@ function submitIssueDetails() {
                     });
 
                 } else {
-                    showSpanErrorMessage(mapPoint, serviceRequestGraphic.attributes);
+                    showServiceRequestDetails(mapPoint, serviceRequestGraphic.attributes);
                     hideProgressIndicator();
                     resetRequestFields();
                     hideCreateRequestContainer();
