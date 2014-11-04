@@ -116,7 +116,7 @@ function showCreateRequestContainer() {
 }
 
 //Show toggle request types
-function ToggleRequestTypesList() {
+function toggleRequestTypesList() {
     dojo.byId("divRequestTypes").style.width = (dojo.coords("divDropdown").w - 2) + "px";
     createScrollbar(dojo.byId("divCreateRequestContent"), dojo.byId("divCreateRequestScrollContent"));
     dojo.byId("divRequestTypes").style.display = (dojo.byId("divRequestTypes").style.display === "block") ? "none" : "block";
@@ -132,7 +132,7 @@ function ClearGraphics() {
 }
 
 //Show comments view
-function ShowCommentsView() {
+function showCommentsView() {
 
 
     if (showCommentsTab) {
@@ -513,7 +513,7 @@ function setRating(control, rating) {
 }
 
 //Adds a new comment
-function AddRequestComment() {
+function addRequestComment() {
      var text,commentGraphic, date, attr = {};
      text = dojo.byId('txtComments').value.trim('');
     if (text === "") {
@@ -659,7 +659,7 @@ function sortResultFeatures(a, b) {
 }*/
 
 //Reset the comments textarea
-function ResetTextArea() {
+function resetTextArea() {
     dojo.byId('txtComments').style.overflow = "hidden";
     resetCommentValues();
     setCommentHeight();
@@ -1111,7 +1111,7 @@ function hideCreateRequestContainer() {
 }
 
 //Hide upload file dialog for iOS devices
-function CloseUploadDialog() {
+function closeUploadDialog() {
     dojo.byId('divUploadDialogContainer').style.display = 'none';
 }
 
@@ -1167,7 +1167,7 @@ function OrientationChanged() {
 }
 
 //Hide splash screen container
-function HideSplashScreenMessage() {
+function hideSplashScreenMessage() {
     if (dojo.isIE < 9 || isAndroidDevice) {
         dojo.byId("divSplashScreenContent").style.display = "none";
         dojo.addClass('divSplashScreenContainer', "opacityHideAnimation");
@@ -1195,7 +1195,7 @@ function resizeHandler() {
 }
 
 //Show address container
-function ShowLocateContainer() {
+function showLocateContainer() {
     dojo.byId('txtAddress').blur();
     dojo.byId('txtAddress').style.color = "gray";
     hideBaseMapLayerContainer();
@@ -1269,7 +1269,7 @@ function setAddressResultsHeight() {
 }
 
 //Hide Info request container
-function HideInfoContainer() {
+function hideInfoContainer() {
     featureID = null;
     map.getLayer(tempGraphicsLayerId).clear();
     map.getLayer(highlightPollLayerId).clear();

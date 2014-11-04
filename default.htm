@@ -77,7 +77,7 @@
                                 <td align="center" class="customButton">
                                     <button type="button" id="btnAddPhoto" style="width: 100px;" class="customButtonInner">
                                         Add Photo</button>&nbsp;
-                                    <button type="button" style="width: 100px;" class="customButtonInner" onclick="CloseUploadDialog();">
+                                    <button type="button" style="width: 100px;" class="customButtonInner" onclick="closeUploadDialog();">
                                         Cancel</button>
                                 </td>
                             </tr>
@@ -107,7 +107,7 @@
                             </tr>
                             <tr>
                                 <td align="center">
-                                    <div style="width: 75px; margin-top: 7px;" class="customButton" onclick="HideSplashScreenMessage();">
+                                    <div style="width: 75px; margin-top: 7px;" class="customButton" onclick="hideSplashScreenMessage();">
                                         <div class="customButtonInner">
                                             <table style="width: 100%; height: 100%;">
                                                 <tr>
@@ -145,11 +145,11 @@
                     <table>
                         <tr>
                             <td align="center" id="Td1" class="tdHeader">
-                                <img alt="Settings" src="images/locate.png" class="imgOptions" title="Search" onclick="ShowLocateContainer();"
+                                <img alt="Settings" src="images/locate.png" class="imgOptions" title="Search" onclick="showLocateContainer();"
                                     style="cursor: pointer" />
                             </td>
                             <td align="center" id="tdGeolocation" class="tdHeader">
-                                <img alt="Settings" src="images/gps.png" class="imgOptions" title="Locate" onclick="ShowMyLocation();"
+                                <img alt="Settings" src="images/gps.png" class="imgOptions" title="Locate" onclick="showMyLocation();"
                                     style="cursor: pointer" />
                             </td>
                             <td align="center" id="tdBaseMap">
@@ -190,9 +190,9 @@
                                     <td>
                                         <table style="width: 100%; margin: 5px 5px 5px -2px;">
                                             <tr>
-                                                <td id="tdSearchAddress" class="tdSearchByAddress" onclick="ShowAddressSearchView();">
+                                                <td id="tdSearchAddress" class="tdSearchByAddress" onclick="showAddressSearchView();">
                                                 </td>
-                                                <td id="tdSearchRequest" class="tdSearchByUnSelectedRequest" onclick="ShowRequestSearchView();">
+                                                <td id="tdSearchRequest" class="tdSearchByUnSelectedRequest" onclick="showRequestSearchView();">
                                                 </td>
                                                 <td id="tdImglocate">
                                                     <img id="imgLocate" src="images/locate.png" class="imgLocate" title="Locate" onclick="locateAddress();" />
@@ -284,7 +284,7 @@
                                 </td>
                                 <td align="right" style="width: 10%;">
                                     <img src="images/close.png" id="imgClose" class="imgOptions" title="Close" style="cursor: pointer;
-                                        padding-right: 1px;" onclick="HideCreateRequestContainer();" />
+                                        padding-right: 1px;" onclick="hideCreateRequestContainer();" />
                                 </td>
                             </tr>
                         </table>
@@ -304,11 +304,11 @@
                                                     <tr class="divDropDownContainer" id="divDropDownContainer">
                                                         <td style="height: 25px">
                                                             <input type="text" id="txtSelectedRequest" class="txtSelectedRequest" readonly="readonly"
-                                                                onclick="ToggleRequestTypesList();" />
+                                                                onclick="toggleRequestTypesList();" />
                                                         </td>
                                                         <td style="width: 25px; height: 25px;">
                                                             <img src="images/dropdown.png" id="imgDropdownCarot" state="minimized" class="imgDropdownCarot"
-                                                                onclick="ToggleRequestTypesList();" />
+                                                                onclick="toggleRequestTypesList();" />
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -397,7 +397,7 @@
                                                                 <table cellpadding="0px" cellspacing="0px" style="width: 100%; height: 100%;">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td valign="middle" align="center" style="width: 75px" id="btnSubmit" onclick="SubmitIssueDetails();">
+                                                                            <td valign="middle" align="center" style="width: 75px" id="btnSubmit" onclick="submitIssueDetails();">
                                                                                 <center>
                                                                                     Submit</center>
                                                                             </td>
@@ -413,7 +413,7 @@
                                                                 <table cellpadding="0px" cellspacing="0px" style="width: 100%; height: 100%;">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td valign="middle" align="center" style="width: 75px" id="btnCancel" onclick="HideCreateRequestContainer();">
+                                                                            <td valign="middle" align="center" style="width: 75px" id="btnCancel" onclick="hideCreateRequestContainer();">
                                                                                 <center>
                                                                                     Cancel</center>
                                                                             </td>
@@ -450,15 +450,15 @@
                                     <table cellpadding="0px" cellspacing="0px" align="right">
                                         <tr>
                                             <td id="tdDirections" align="right">
-                                                <img class="infoOptions" id="imgDirections" onclick="ShowInfoDirectionsView();" />
+                                                <img class="infoOptions" id="imgDirections" onclick="showInfoDirectionsView();" />
                                             </td>
                                             <td id="tdComments" align="right">
                                                 <img src="images/comments.png" class="infoOptions" title="Comments" id="imgComments"
-                                                    onclick="ShowCommentsView();" />
+                                                    onclick="showCommentsView();" />
                                             </td>
                                             <td align="right">
                                                 <img src="images/close.png" class="infoOptions" title="Close" style="cursor: pointer;"
-                                                    onclick="HideInfoContainer();" />
+                                                    onclick="hideInfoContainer();" />
                                             </td>
                                         </tr>
                                     </table>
@@ -527,7 +527,7 @@
                                                     <table style="margin-left: auto; margin-right: auto">
                                                         <tr>
                                                             <td>
-                                                                <div style="width: 75px;" class="customButton" id="btnAddComments" onclick="AddRequestComment();">
+                                                                <div style="width: 75px;" class="customButton" id="btnAddComments" onclick="addRequestComment();">
                                                                     <div class="customButtonInner">
                                                                         <table style="width: 100%; height: 100%;">
                                                                             <tr>
@@ -540,7 +540,7 @@
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <div style="width: 75px;" class="customButton" onclick="ResetTextArea();">
+                                                                <div style="width: 75px;" class="customButton" onclick="resetTextArea();">
                                                                     <div class="customButtonInner">
                                                                         <table cellpadding="0px" cellspacing="0px" style="width: 100%; height: 100%;">
                                                                             <tr>

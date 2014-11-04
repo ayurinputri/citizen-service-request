@@ -86,7 +86,7 @@ var Picup = {
         }
     	input.picupOptions = options;
     	input.onclick = function(){ 
-            CloseUploadDialog();      	    
+            closeUploadDialog();      	    
     	    Picup.activeFileInput = this;
     		window.open(Picup.urlForOptions('new', this.picupOptions), Picup.windowname);
     		// start the observer

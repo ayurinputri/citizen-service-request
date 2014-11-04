@@ -479,7 +479,7 @@ function locateOnMap(attributes) {
         }
     }
     //function to display the current location of the user
-function ShowMyLocation() {
+function showMyLocation() {
     hideBaseMapLayerContainer();
     hideShareAppContainer();
     hideAddressContainer();
