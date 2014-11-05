@@ -81,7 +81,7 @@ var databaseFields;
 
 //This initialization function is called when the DOM elements are ready
 function dojoInit() {
-    esri.config.defaults.io.proxyUrl = "proxy.ashx"; //relative path
+    esri.config.defaults.io.proxyUrl = "proxy/proxy.ashx"; //relative path
     esriConfig.defaults.io.alwaysUseProxy = false;
     esriConfig.defaults.io.timeout = 180000; // milliseconds
 
