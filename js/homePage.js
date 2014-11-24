@@ -17,7 +17,6 @@
  */
 dojo.require("dojo.window");
 dojo.require("dojo.date.locale");
-dojo.require("dojox.mobile.View");
 dojo.require("esri.map");
 dojo.require("esri.tasks.geometry");
 dojo.require("esri.tasks.locator");
@@ -82,7 +81,7 @@ var databaseFields;
 
 //This initialization function is called when the DOM elements are ready
 function dojoInit() {
-    esri.config.defaults.io.proxyUrl = "proxy.ashx"; //relative path
+    esri.config.defaults.io.proxyUrl = "proxy/proxy.ashx"; //relative path
     esriConfig.defaults.io.alwaysUseProxy = false;
     esriConfig.defaults.io.timeout = 180000; // milliseconds
 
