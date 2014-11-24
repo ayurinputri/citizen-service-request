@@ -205,7 +205,7 @@ dojo.declare("js.config", null, {
             DisplayField: "${Match_addr}",
             ZoomLevel: 7,
             AddressMatchScore: 80,
-            LocatorDefaultRequest: "77257",
+            LocatorDefaultRequest: "1",
             LocatorFieldName: 'Loc_name',
             LocatorFieldValues: ["USA.StreetName", "USA.PointAddress", "USA.StreetAddress"]
         }, {
