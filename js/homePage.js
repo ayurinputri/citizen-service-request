@@ -369,7 +369,7 @@ function dojoInit() {
         var zoomExtent;
         var extent = GetQuerystring('extent');
         if (extent != "") {
-            zoomExtent = extent.split(',');
+            zoomExtent = decodeURIComponent(extent).split(',');
         } else {
             zoomExtent = responseObject.DefaultExtent.split(",");
         }
