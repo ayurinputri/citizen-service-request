@@ -1,10 +1,10 @@
 # citizen-service-request
 
-Citizen Service Request is a configuration of ArcGIS Server and a HTML 5 / JavaScript application that allows citizens to submit requests for service in their community. It is a single application that can be deployed by local governments and used by citizens on a desktop PC, mobile phone, or tablet device.
+Citizen Service Request is a configuration of ArcGIS and a JavaScript application that allows citizens to submit requests for service in their community. It is a single application that can be deployed by local governments and used by citizens on a desktop PC, mobile phone, or tablet device.
 
-[Try the Citizen Service Request application](http://localgovtemplates2.esri.com/citizenservicerequest/default.htm)
+[Try the Citizen Service Request application](http://links.esri.com/localgovernment/tryit/CitizenServiceRequest/)
 
-[![Image of Citizen Service Request application](citizen-service-request.png "Citizen Service Request application")](http://localgovtemplates2.esri.com/citizenservicerequest/default.htm)
+[![Image of Citizen Service Request application](citizen-service-request.png "Citizen Service Request application")](http://links.esri.com/localgovernment/tryit/CitizenServiceRequest/)
 
 ## Features
 
@@ -13,45 +13,29 @@ Citizen Service Request is a configuration of ArcGIS Server and a HTML 5 / JavaS
 * Submit comments or concerns to the local government on existing service requests
 * Share with social media
 
-## Instructions
-
-### Esri Sample Services
-
-Esri's sample services can be used with this repository to extend the application.
-
-### Your Services
-
-[Detailed help](http://resources.arcgis.com/en/help/localgovernment/10.1/index.html#/What_is_Citizen_Service_Request/028s00000020000000/)
-on the ArcGIS Resource Center can guide you in the setup and configuration of the app with your services.
-
-### General Help
-[New to Github? Get started here.](http://htmlpreview.github.com/?https://github.com/Esri/esri.github.com/blob/master/help/esri-getting-to-know-github.html)
-
 ## Requirements
 
-### Esri Sample Services
+**Start now using Esri-supplied sample services**
 
-* Microsoft ASP.NET Framework 4.0 available from the [Microsoft website](http://www.microsoft.com/en-us/download/details.aspx?id=17851)
+You can start using the application now by setting it up on a web server running Microsoft Internet Information Services (IIS) and using sample services supplied by Esri.
+You'll need to convert to an application in IIS and use the ASP .NET 4.0. application pool.
 
-### Your Services
+**Start now using your own services**
 
-* ArcGIS for Desktop 10.2 - Standard or Advanced - [About](http://www.esri.com/software/arcgis/arcgis-for-desktop)
-* ArcGIS for Server 10.2 - Standard or Advanced - [About](http://www.esri.com/software/arcgis/arcgisserver)
-* Local Government Information Model - [About](http://www.arcgis.com/home/item.html?id=ae175b36c4154dda987127dff879350d)
-* Microsoft ASP.NET Framework 4.0 available from the [Microsoft website](http://www.microsoft.com/en-us/download/details.aspx?id=17851)
+For more information on requirements and publication steps, see [Citizen Service Request](http://links.esri.com/localgovernment/help/10.2/CitizenServiceRequest) help.
 
 ## Resources
+
+Additional [information and sample data](http://www.arcgis.com/home/item.html?id=b4756cb6d25e43b995c5fef887b1d5e8) are available for the application.
 
 Learn more about Esri's [ArcGIS for Local Government maps and apps](http://solutions.arcgis.com/local-government/).
 
 Show me a list of other [Local Government GitHub repositories](http://esri.github.io/#Local-Government).
 
-Additional [information and sample data](http://www.arcgis.com/home/item.html?id=b4756cb6d25e43b995c5fef887b1d5e8)
-are available for the application.
+This application uses the 3.11 version of [Esri's ArcGIS API for JavaScript](http://help.arcgis.com/en/webapi/javascript/arcgis/); see the site for concepts, samples, and a reference for using the API to create mapping web sites.
 
-This application uses the 3.5 version of
-[Esri's ArcGIS API for JavaScript](http://help.arcgis.com/en/webapi/javascript/arcgis/);
-see the site for concepts, samples, and a reference for using the API to create mapping web sites.
+[New to Github? Get started here.](http://htmlpreview.github.com/?https://github.com/Esri/esri.github.com/blob/master/help/esri-getting-to-know-github.html)
+
 
 ## Issues
 
