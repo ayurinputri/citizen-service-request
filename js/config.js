@@ -70,7 +70,7 @@ dojo.declare("js.config", null, {
         Key: "parcelMap",
         ThumbnailSource: "images/parcelmap.png",
         Name: "Streets",
-        MapURL: "http://tryitlive.arcgis.com/arcgis/rest/services/GeneralPurpose/MapServer"
+        MapURL:"https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
 
     }, {
         Key: "hybridMap",
